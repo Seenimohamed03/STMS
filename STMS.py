@@ -7,6 +7,13 @@ import threading
 import pygame
 import sys
 
+# Add this at the top after imports
+try:
+    import asyncio
+    ASYNC_MODE = True
+except ImportError:
+    ASYNC_MODE = False
+
 # Default values of signal timers
 defaultGreen = {0: 10, 1: 10, 2: 10, 3: 10}
 defaultRed = 150 
@@ -338,27 +345,27 @@ def calculateDensityAndWaiting():
             signals[i].density = vehicleCount
         time.sleep(densityCheckInterval)
 
-def calculateGreenTime(signalIndex):
-    density = trafficDensity[signalIndex]
+def calculateGreenTime(signal_index):
+    """Calculate green time based on traffic density"""
+    density = trafficDensity[signal_index]
     if density == 0:
         return minGreenTime
-    maxDensity = max(trafficDensity.values())
-    if maxDensity == 0:
-        return minGreenTime
-    normalizedDensity = density / maxDensity
-    greenTime = minGreenTime + (maxGreenTime - minGreenTime) * normalizedDensity
-    return int(greenTime)
+    elif density <= 5:
+        return max(minGreenTime, min(maxGreenTime, density * 2))
+    else:
+        return maxGreenTime
 
 def determineNextGreen():
-    maxDensity = -1
-    nextSignal = currentGreen
+    """Determine next signal based on density"""
+    max_density = max(trafficDensity.values())
+    if max_density == 0:
+        return (currentGreen + 1) % noOfSignals
+    
     for i in range(noOfSignals):
-        if i != currentGreen and trafficDensity[i] > maxDensity:
-            maxDensity = trafficDensity[i]
-            nextSignal = i
-    if maxDensity == 0:
-        nextSignal = (currentGreen + 1) % noOfSignals
-    return nextSignal
+        if trafficDensity[i] == max_density and i != currentGreen:
+            return i
+    
+    return (currentGreen + 1) % noOfSignals
 
 def initialize():
     ts1 = TrafficSignal(0, defaultYellow, defaultGreen[0])
@@ -445,6 +452,7 @@ async def main():
         if allowedVehicleTypes[vehicleType]:
             allowedVehicleTypesList.append(i)
         i += 1
+    
     thread1 = threading.Thread(name="initialization", target=initialize, args=())
     thread1.daemon = True
     thread1.start()
@@ -465,6 +473,7 @@ async def main():
     yellowSignal = pygame.image.load('images/signals/yellow.png')
     greenSignal = pygame.image.load('images/signals/green.png')
     font = pygame.font.Font(None, 30)
+    
     thread2 = threading.Thread(name="generateVehicles", target=generateVehicles, args=())
     thread2.daemon = True
     thread2.start()
@@ -489,13 +498,12 @@ async def main():
                 else:
                     signals[i].signalText = "---"
                 screen.blit(redSignal, signalCoods[i])
+        
         signalTexts = ["", "", "", ""]
-
         for i in range(0, noOfSignals):
             signalTexts[i] = font.render(str(signals[i].signalText), True, white, black)
             screen.blit(signalTexts[i], signalTimerCoods[i])
 
-        # Display waiting vehicle counts near each signal
         waiting_texts = [
             font.render(f"Waiting: {waitingVehicleCounts['right']}", True, white, black),
             font.render(f"Waiting: {waitingVehicleCounts['down']}", True, white, black),
@@ -508,7 +516,11 @@ async def main():
         for vehicle in simulation:
             screen.blit(vehicle.image, [vehicle.x, vehicle.y])
             vehicle.move()
+        
         pygame.display.update()
+        
+        # CRITICAL: Add this for web compatibility
+        await asyncio.sleep(0)
 
 if __name__ == "__main__":
     asyncio.run(main())
