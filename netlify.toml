@@ -1,5 +1,5 @@
 [build]
-  command = "rm -rf dist && pip install -r requirements.txt && python -m pygbag --archive --width 1400 --height 800 STMS.py"
+  command = "pip install -r requirements.txt && python -c 'import pygbag; print(pygbag.__version__)"
   publish = "dist"
 
 [build.environment]
@@ -9,4 +9,5 @@
   from = "/*"
   to = "/index.html"
   status = 200
+
 
