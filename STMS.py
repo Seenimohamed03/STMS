@@ -1,3 +1,4 @@
+import asyncio
 import os
 os.chdir(os.path.dirname(os.path.abspath(__file__)))
 import random
@@ -437,7 +438,7 @@ def generateVehicles():
         Vehicle(lane_number, vehicleTypes[vehicle_type], direction_number, direction, will_turn)
         time.sleep(1)
 
-class Main:
+async def main():
     global allowedVehicleTypesList
     i = 0
     for vehicleType in allowedVehicleTypes:
@@ -509,4 +510,5 @@ class Main:
             vehicle.move()
         pygame.display.update()
 
-Main()
+if __name__ == "__main__":
+    asyncio.run(main())
