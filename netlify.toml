@@ -1,0 +1,11 @@
+[build]
+  command = "pip install -r requirements.txt && python -m pygbag --archive --width 1400 --height 800 STMS.py"
+  publish = "dist"
+
+[build.environment]
+  PYTHON_VERSION = "3.9"
+
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
