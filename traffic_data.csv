@@ -1,0 +1,40 @@
+Step,Lane 1,Lane 2,Lane 3,Lane 4,Green Lane,Green Duration
+0,5,0,8,34,lane_4,21
+1,24,11,36,32,lane_3,10
+2,12,47,40,23,lane_2,11
+3,5,21,32,26,lane_3,11
+4,32,36,4,41,lane_4,10
+5,24,4,46,34,lane_3,12
+6,43,49,35,10,lane_2,10
+7,6,36,49,38,lane_3,11
+8,41,8,3,7,lane_1,20
+9,6,28,45,16,lane_3,14
+
+
+
+ Emergency Vehicle Priority:
+   Implement a system where emergency vehicles (like ambulances or fire trucks) can be given priority. This could involve:
+   - Adding a new vehicle type for emergency vehicles.
+   - Implementing a mechanism to change traffic signals when an emergency vehicle is detected.
+   - Visualizing the emergency vehicle differently (e.g., with flashing lights).
+ Pedestrian Crossings:
+   Add pedestrian crossings at the intersection:
+   - Implement pedestrian signals that coordinate with the vehicle signals.
+   - Add a pedestrian generation and movement system.
+   - Include pedestrian waiting areas and crossing animations.
+ Time-of-Day Traffic Patterns:
+   Implement varying traffic patterns based on the time of day:
+   - Create a day/night cycle in the simulation.
+   - Adjust vehicle generation rates and types based on simulated time (e.g., more buses during rush hours).
+   - Visualize the time of day (change background, add a clock
+ User Interaction:
+   Allow user interaction with the simulation:
+   - Add ability to manually control traffic lights.
+   - Implement a system to add or remove vehicles on demand.
+   - Allow adjusting simulation parameters (speed, vehicle generation rate) in real-time.
+ Multi-Intersection Simulation:
+   Expand the simulation to cover multiple intersections:
+   - Implement a larger road network with multiple connected intersections.
+   - Coordinate traffic signals across intersections for better flow.
+
+
