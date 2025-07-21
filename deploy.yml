@@ -1,0 +1,52 @@
+name: Deploy Traffic Simulation
+
+on:
+  push:
+    branches: [ main ]
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+    
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.9'
+    
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install pygame pygbag
+    
+    - name: Build with pygbag
+      run: |
+        python -m pygbag --archive --ume_block 0 --cdn --width 1400 --height 800 --name "Traffic-Simulation" STMS.py
+    
+    - name: Debug - Check what pygbag created
+      run: |
+        echo "Current directory contents:"
+        ls -la
+        echo "Looking for HTML files:"
+        find . -name "*.html" -type f
+        echo "Looking for dist directory:"
+        find . -name "dist" -type d
+    
+    - name: Deploy to GitHub Pages
+      uses: peaceiris/actions-gh-pages@v3
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        publish_dir: ./dist
+        force_orphan: true
+
+
+
+
